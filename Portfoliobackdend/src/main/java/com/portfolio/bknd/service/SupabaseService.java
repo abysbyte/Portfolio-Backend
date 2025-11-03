@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 public class SupabaseService {
 	
-	@Value("${supabase.url")
+	@Value("${supabase.url}")
 	private String supabaseUrl;
 	
 	@Value("${supabase.key}")
@@ -24,7 +24,7 @@ public class SupabaseService {
 		String requestBody = "{\"expireIn\": 3600}";
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(supabaseUrl + "/storage/v1/object/sign/" + bucket + "/" + filePath))
-				.header("Authorization", "Bearer" + supabaseKey)
+				.header("Authorization", "Bearer " + supabaseKey)
 				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.build();
