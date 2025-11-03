@@ -1,14 +1,14 @@
-# Use OpenJDK as base image
-FROM openjdk:21-jdk-slim
+# Use official OpenJDK image
+FROM openjdk:17-jdk-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy the JAR file built by Maven/Gradle
+# Copy the built jar from Maven target folder
 COPY target/*.jar app.jar
 
-# Expose the port (Render will auto-detect)
+# Expose port 8080
 EXPOSE 8080
 
 # Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
