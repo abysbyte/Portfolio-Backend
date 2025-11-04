@@ -21,10 +21,11 @@ public class SupabaseService {
 	private final HttpClient httpClient = HttpClient.newHttpClient();
 	
 	public String generateSignedUrl(String bucket, String filePath) throws Exception {
-		String requestBody = "{\"expireIn\": 3600}";
+		String requestBody = "{\"expiresIn\": 3600}";
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(supabaseUrl + "/storage/v1/object/sign/" + bucket + "/" + filePath))
 				.header("Authorization", "Bearer " + supabaseKey)
+				.header("apikey", supabaseKey)
 				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.build();
