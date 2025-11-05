@@ -18,7 +18,7 @@ public class CorsConfig {
 								"https://portfolio-2-0-eight-sage.vercel.app",
 								"http://localhost:3000"
 								)
-						.allowedMethods("Get", "Post", "Put", "Delete")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
 						.allowCredentials(false);
 			}
