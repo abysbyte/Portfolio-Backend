@@ -22,27 +22,42 @@ public class ResumeController {
 	private SupabaseService supabaseService;
 	
 	@GetMapping("/download")
-	public ResponseEntity<String> downloadResume() {
+	public ResponseEntity<Map<String, String>> downloadResume() {
 		try {
 			String bucket = "resume";
 			String filePath = "VishalThakurResume.pdf";
 			String signedUrlJson = supabaseService.generateSignedUrl(bucket, filePath);
 			
+			System.out.println("Supabase raw response: " + signedUrlJson);
+			
 			// parse JSON returned by Supabase
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree(signedUrlJson);
-			String signedURL = node.get("signedURL").asText();
 			
-			// return JSON TO FRONTEND
-			Map<String, String> response = new HashMap<>();
-			response.put("signedURL", signedURL);
-			
-			return ResponseEntity.ok(signedUrlJson);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Map<String, String> error = new HashMap<>();
-			error.put("error", e.getMessage());
-			return ResponseEntity.internalServerError().body("{\"error\":\"" + e.getMessage() + "\"}");
-		}
+			String signedURL = null;
+            if (node.has("signedURL")) {
+                signedURL = node.get("signedURL").asText();
+            } else if (node.has("signedUrl")) {
+                signedURL = node.get("signedUrl").asText();
+            } else if (node.has("url")) {
+                signedURL = node.get("url").asText();
+            }
+
+            if (signedURL == null || signedURL.isBlank()) {
+                throw new RuntimeException("Supabase did not return a valid signed URL: " + signedUrlJson);
+            }
+
+            // ✅ Return a clean JSON object to frontend
+            Map<String, String> response = new HashMap<>();
+            response.put("signedURL", signedURL);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
+        }
 	}
 }
