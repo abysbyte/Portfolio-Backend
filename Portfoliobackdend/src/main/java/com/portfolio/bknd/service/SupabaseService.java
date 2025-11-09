@@ -18,7 +18,7 @@ public class SupabaseService {
 	
 	// Create a single client instance for reuse
 	private final HttpClient httpClient = HttpClient.newBuilder()
-	        .connectTimeout(java.time.Duration.ofSeconds(10)) // Add a connection timeout
+	        .connectTimeout(java.time.Duration.ofSeconds(60)) // Add a connection timeout
 	        .build();
 	
 	
