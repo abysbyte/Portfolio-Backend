@@ -15,26 +15,31 @@ import com.portfolio.bknd.service.SupabaseService;
 
 @RestController
 @RequestMapping("/api/resume")
-
 public class ResumeController {
 	
 	@Autowired
 	private SupabaseService supabaseService;
+
+    // ObjectMapper is thread-safe and expensive to create. 
+    // Initialize it once for better performance.
+    private static final ObjectMapper MAPPER = new ObjectMapper(); 
 	
 	@GetMapping("/download")
 	public ResponseEntity<Map<String, String>> downloadResume() {
 		try {
 			String bucket = "resume";
 			String filePath = "VishalThakurResume.pdf";
+			
+            // Get the raw signed URL JSON from the service
 			String signedUrlJson = supabaseService.generateSignedUrl(bucket, filePath);
 			
 			System.out.println("Supabase raw response: " + signedUrlJson);
 			
-			// parse JSON returned by Supabase
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode node = mapper.readTree(signedUrlJson);
+			// Parse JSON returned by Supabase using the shared MAPPER
+			JsonNode node = MAPPER.readTree(signedUrlJson);
 			
 			String signedURL = null;
+            // Check common key variations returned by Supabase REST API
             if (node.has("signedURL")) {
                 signedURL = node.get("signedURL").asText();
             } else if (node.has("signedUrl")) {
@@ -47,7 +52,7 @@ public class ResumeController {
                 throw new RuntimeException("Supabase did not return a valid signed URL: " + signedUrlJson);
             }
 
-            // ✅ Return a clean JSON object to frontend
+            // Return a clean JSON object to frontend
             Map<String, String> response = new HashMap<>();
             response.put("signedURL", signedURL);
 
@@ -57,7 +62,8 @@ public class ResumeController {
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
+            // This ensures the detailed error from SupabaseService is passed back to the client logs.
+            return ResponseEntity.internalServerError().body(error); 
         }
 	}
 }
