@@ -21,17 +21,9 @@ public class SupabaseService {
 	        .connectTimeout(java.time.Duration.ofSeconds(10)) // Add a connection timeout
 	        .build();
 	
-	/**
-	 * Generates a signed URL for a file in Supabase storage.
-	 *
-	 * @param bucket The name of the storage bucket.
-	 * @param filePath The path and name of the file within the bucket.
-	 * @return The raw JSON response body from Supabase (which should contain the signed URL).
-	 * @throws Exception if the request fails, times out, or returns a non-200 status code.
-	 */
+	
 	public String generateSignedUrl(String bucket, String filePath) throws Exception {
 		
-		// 1. Basic configuration check
 		if (supabaseUrl == null || supabaseKey == null || supabaseUrl.isBlank() || supabaseKey.isBlank()) {
 			throw new IllegalStateException("Supabase URL or Key environment variables are not set correctly.");
 		}
@@ -50,7 +42,6 @@ public class SupabaseService {
 		
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		
-		// 2. CRITICAL FIX: Check the status code!
 		if (response.statusCode() != 200) {
 			// Throw a detailed exception if Supabase returns an error
 			throw new RuntimeException(
@@ -59,7 +50,6 @@ public class SupabaseService {
 			);
 		}
 		
-		// 3. Return the body (should now be clean JSON)
 		return response.body();
 	}
 }
