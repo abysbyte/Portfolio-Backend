@@ -36,7 +36,7 @@ public class SupabaseService {
 				.header("Authorization", "Bearer " + supabaseKey)
 				.header("apikey", supabaseKey)
 				.header("Content-Type", "application/json")
-				.timeout(java.time.Duration.ofSeconds(15)) // Add a request timeout
+				.timeout(java.time.Duration.ofSeconds(15)) // request timeout
 				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.build();
 		
