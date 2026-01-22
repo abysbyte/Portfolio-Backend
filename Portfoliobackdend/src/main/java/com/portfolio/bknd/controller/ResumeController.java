@@ -62,7 +62,7 @@ public class ResumeController {
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
-            // This ensures the detailed error from SupabaseService is passed back to the client logs.
+            // This ensures the detailed error from SupabaseService is passed back to the client logs
             return ResponseEntity.internalServerError().body(error); 
         }
 	}
