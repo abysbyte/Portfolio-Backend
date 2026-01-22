@@ -20,7 +20,7 @@ public class ResumeController {
 	@Autowired
 	private SupabaseService supabaseService;
 
-    // ObjectMapper is thread-safe and expensive to create. 
+    // ObjectMapper is thread-safe and expensive to create 
     // Initialize it once for better performance.
     private static final ObjectMapper MAPPER = new ObjectMapper(); 
 	
